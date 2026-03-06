@@ -1,0 +1,17 @@
+$kind: http-request
+name: 'DELETE Producto 404'
+url: '{{baseUrl}}/productos/99999'
+method: DELETE
+order: 13000
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 404 - producto no existe para eliminar", function () {
+        pm.response.to.have.status(404);
+      });
+
+      pm.test("Body has ok=false", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", false);
+      });
+    language: text/javascript

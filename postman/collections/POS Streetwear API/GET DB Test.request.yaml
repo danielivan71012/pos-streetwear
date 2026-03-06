@@ -1,0 +1,30 @@
+$kind: http-request
+name: DB Test
+url: 'http://localhost:3000/db-test'
+method: GET
+order: 2000
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 200", function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test("Body has ok=true", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", true);
+      });
+
+      pm.test("Response time < 500ms", function () {
+        pm.expect(pm.response.responseTime).to.be.below(500);
+      });
+
+      pm.test("DB connection is alive", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("data");
+      });
+
+      pm.test("Response is JSON", function () {
+        pm.response.to.have.header("Content-Type", /json/);
+      });
+    language: text/javascript

@@ -1,0 +1,35 @@
+$kind: http-request
+name: POST Crear Producto
+url: '{{baseUrl}}/productos'
+method: POST
+body:
+  type: json
+  content: |-
+    {
+      "ID_Marca": 1,
+      "ID_Categoria": 1,
+      "Nombre_Modelo": "Sneaker Test",
+      "Atributo_Talla_Medida": "42",
+      "Precio_Venta": 1299.99,
+      "Stock_Disponible": 25
+    }
+order: 2000
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 201", function () {
+        pm.response.to.have.status(201);
+      });
+
+      pm.test("Body has ok and data", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", true);
+        pm.expect(json).to.have.property("data");
+      });
+
+      pm.test("Save productoId", function () {
+        const json = pm.response.json();
+        pm.expect(json.data).to.have.property("ID_Producto");
+        pm.collectionVariables.set("productoId", String(json.data.ID_Producto));
+      });
+    language: text/javascript

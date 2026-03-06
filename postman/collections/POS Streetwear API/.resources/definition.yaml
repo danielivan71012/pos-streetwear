@@ -1,0 +1,10 @@
+$kind: collection
+name: POS Streetwear API
+description: 'Colección completa para la API POS Streetwear: CRUD Vendedores, CRUD Productos, y pruebas negativas.'
+variables:
+  - key: baseUrl
+    value: 'http://localhost:3000/api/v1'
+  - key: vendedorId
+    value: ''
+  - key: productoId
+    value: ''

@@ -1,0 +1,31 @@
+$kind: http-request
+name: 'POST Vendedor - Nombre Corto'
+url: '{{baseUrl}}/vendedores'
+method: POST
+order: 3000
+body:
+  type: json
+  content: |-
+    {
+      "Nombre_Completo": "AB",
+      "Rol": "Vendedor",
+      "Email_Contacto": "short@mail.com"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 400 - nombre muy corto", function () {
+        pm.response.to.have.status(400);
+      });
+
+      pm.test("Body has ok=false", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", false);
+      });
+
+      pm.test("Error message mentions nombre", function () {
+        const json = pm.response.json();
+        const msg = JSON.stringify(json).toLowerCase();
+        pm.expect(msg).to.include("nombre");
+      });
+    language: text/javascript

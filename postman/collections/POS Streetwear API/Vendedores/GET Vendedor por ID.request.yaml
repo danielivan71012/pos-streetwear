@@ -1,0 +1,23 @@
+$kind: http-request
+name: GET Vendedor por ID
+url: '{{baseUrl}}/vendedores/{{vendedorId}}'
+method: GET
+order: 3000
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 200", function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test("Body has ok and data", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", true);
+        pm.expect(json).to.have.property("data");
+      });
+
+      pm.test("Returned correct vendedor", function () {
+        const json = pm.response.json();
+        pm.expect(String(json.data.ID_Usuario)).to.eql(pm.collectionVariables.get("vendedorId"));
+      });
+    language: text/javascript

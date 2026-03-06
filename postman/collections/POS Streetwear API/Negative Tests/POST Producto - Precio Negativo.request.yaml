@@ -1,0 +1,34 @@
+$kind: http-request
+name: 'POST Producto - Precio Negativo'
+url: '{{baseUrl}}/productos'
+method: POST
+order: 4000
+body:
+  type: json
+  content: |-
+    {
+      "ID_Marca": 1,
+      "ID_Categoria": 1,
+      "Nombre_Modelo": "Sneaker Negativo",
+      "Atributo_Talla_Medida": "42",
+      "Precio_Venta": -100,
+      "Stock_Disponible": 10
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 400 - precio negativo", function () {
+        pm.response.to.have.status(400);
+      });
+
+      pm.test("Body has ok=false", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", false);
+      });
+
+      pm.test("Error message mentions precio", function () {
+        const json = pm.response.json();
+        const msg = JSON.stringify(json).toLowerCase();
+        pm.expect(msg).to.include("precio");
+      });
+    language: text/javascript

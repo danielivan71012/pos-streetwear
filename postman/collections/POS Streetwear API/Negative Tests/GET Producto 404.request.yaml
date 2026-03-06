@@ -1,0 +1,21 @@
+$kind: http-request
+name: 'GET Producto 404'
+url: '{{baseUrl}}/productos/99999'
+method: GET
+order: 9000
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 404 - producto no existe", function () {
+        pm.response.to.have.status(404);
+      });
+
+      pm.test("Body has ok=false", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", false);
+      });
+
+      pm.test("Response time < 500ms", function () {
+        pm.expect(pm.response.responseTime).to.be.below(500);
+      });
+    language: text/javascript

@@ -1,0 +1,4 @@
+$kind: collection
+name: Negative Tests
+description: 'Pruebas negativas: validaciones de email, rol, nombre, precio, stock, foreign keys, y errores 404.'
+order: 3000

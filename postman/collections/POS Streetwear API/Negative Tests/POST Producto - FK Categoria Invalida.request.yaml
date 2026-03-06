@@ -1,0 +1,28 @@
+$kind: http-request
+name: 'POST Producto - FK Categoria Invalida'
+url: '{{baseUrl}}/productos'
+method: POST
+order: 7000
+body:
+  type: json
+  content: |-
+    {
+      "ID_Marca": 1,
+      "ID_Categoria": 99999,
+      "Nombre_Modelo": "Sneaker FK Cat",
+      "Atributo_Talla_Medida": "42",
+      "Precio_Venta": 999.99,
+      "Stock_Disponible": 10
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 400 or 500 - FK categoría inválida", function () {
+        pm.expect(pm.response.code).to.be.oneOf([400, 500]);
+      });
+
+      pm.test("Body has ok=false", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", false);
+      });
+    language: text/javascript

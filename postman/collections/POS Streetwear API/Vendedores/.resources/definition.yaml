@@ -1,0 +1,4 @@
+$kind: collection
+name: Vendedores
+description: 'CRUD completo para el recurso Vendedores (Usuarios con rol Vendedor/Administrador).'
+order: 1000

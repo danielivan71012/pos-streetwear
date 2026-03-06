@@ -1,0 +1,4 @@
+$kind: collection
+name: Productos
+description: 'CRUD completo para el recurso Productos (inventario de streetwear).'
+order: 2000

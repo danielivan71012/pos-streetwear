@@ -1,0 +1,31 @@
+$kind: http-request
+name: 'POST Vendedor - Rol Invalido'
+url: '{{baseUrl}}/vendedores'
+method: POST
+order: 2000
+body:
+  type: json
+  content: |-
+    {
+      "Nombre_Completo": "Test Vendedor",
+      "Rol": "RolInventado",
+      "Email_Contacto": "valid@mail.com"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 400 - rol inválido", function () {
+        pm.response.to.have.status(400);
+      });
+
+      pm.test("Body has ok=false", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", false);
+      });
+
+      pm.test("Error message mentions rol", function () {
+        const json = pm.response.json();
+        const msg = JSON.stringify(json).toLowerCase();
+        pm.expect(msg).to.include("rol");
+      });
+    language: text/javascript

@@ -1,0 +1,25 @@
+$kind: http-request
+name: 'PUT Vendedor 404'
+url: '{{baseUrl}}/vendedores/99999'
+method: PUT
+order: 10000
+body:
+  type: json
+  content: |-
+    {
+      "Nombre_Completo": "No Existe",
+      "Rol": "Vendedor",
+      "Email_Contacto": "noexiste@mail.com"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 404 - vendedor no existe para actualizar", function () {
+        pm.response.to.have.status(404);
+      });
+
+      pm.test("Body has ok=false", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", false);
+      });
+    language: text/javascript

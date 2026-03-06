@@ -1,0 +1,23 @@
+$kind: http-request
+name: GET Producto por ID
+url: '{{baseUrl}}/productos/{{productoId}}'
+method: GET
+order: 3000
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 200", function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test("Body has ok and data", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", true);
+        pm.expect(json).to.have.property("data");
+      });
+
+      pm.test("Returned correct producto", function () {
+        const json = pm.response.json();
+        pm.expect(String(json.data.ID_Producto)).to.eql(pm.collectionVariables.get("productoId"));
+      });
+    language: text/javascript

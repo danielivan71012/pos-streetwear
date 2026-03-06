@@ -1,0 +1,17 @@
+$kind: http-request
+name: DELETE Eliminar Vendedor
+url: '{{baseUrl}}/vendedores/{{vendedorId}}'
+method: DELETE
+order: 5000
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 200", function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test("Body has ok=true", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", true);
+      });
+    language: text/javascript

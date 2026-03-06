@@ -1,0 +1,13 @@
+{
+  "id": "0cb87f5b-fce4-4c4e-b68e-bc9b335cd6e8",
+  "version": 1,
+  "name": "POS Streetwear Collection Creator",
+  "protocol": "http",
+  "port": 4500,
+  "mockSrc": "./mock.js",
+  "autoRestartOnChange": true,
+  "logging": {
+    "level": "verbose",
+    "showBody": true
+  }
+}

@@ -1,0 +1,28 @@
+$kind: http-request
+name: 'PUT Producto 404'
+url: '{{baseUrl}}/productos/99999'
+method: PUT
+order: 11000
+body:
+  type: json
+  content: |-
+    {
+      "ID_Marca": 1,
+      "ID_Categoria": 1,
+      "Nombre_Modelo": "No Existe",
+      "Atributo_Talla_Medida": "42",
+      "Precio_Venta": 100,
+      "Stock_Disponible": 5
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 404 - producto no existe para actualizar", function () {
+        pm.response.to.have.status(404);
+      });
+
+      pm.test("Body has ok=false", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", false);
+      });
+    language: text/javascript
