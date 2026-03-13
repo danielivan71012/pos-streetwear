@@ -1,0 +1,36 @@
+$kind: http-request
+name: POST Vendedor XSS Sanitization
+url: '{{baseUrl}}/vendedores'
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{adminToken}}
+body:
+  type: json
+  content: |-
+    {
+      "Nombre_Completo": "<script>alert(1)</script> QA",
+      "Rol": "Vendedor",
+      "Email_Contacto": "{{avance3XssEmail}}"
+    }
+order: 9000
+scripts:
+  - type: beforeRequest
+    code: |-
+      pm.collectionVariables.set("avance3XssEmail", "xss." + Date.now() + "@mail.com");
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test("Status 201", function () {
+        pm.response.to.have.status(201);
+      });
+
+      pm.test("Nombre saneado y vendedor guardado", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", true);
+        pm.expect(json.data).to.have.property("ID_Usuario");
+        pm.expect(json.data.Nombre_Completo).to.not.include("<script>");
+        pm.expect(json.data.Nombre_Completo).to.include("&lt;script&gt;");
+        pm.collectionVariables.set("avance3XssVendedorId", String(json.data.ID_Usuario));
+      });
+    language: text/javascript

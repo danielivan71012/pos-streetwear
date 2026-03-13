@@ -1,0 +1,30 @@
+$kind: http-request
+name: POST Pedido 401 Sin Token
+url: '{{baseUrl}}/pedidos'
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "items": [
+        {
+          "ID_Producto": {{avance3ProductoId}},
+          "Cantidad": 1
+        }
+      ]
+    }
+order: 8000
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 401", function () {
+        pm.response.to.have.status(401);
+      });
+
+      pm.test("Respuesta indica falta de token", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", false);
+      });
+    language: text/javascript

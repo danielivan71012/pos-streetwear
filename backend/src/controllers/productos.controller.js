@@ -1,3 +1,4 @@
+const { matchedData } = require("express-validator");
 const Productos = require("../models/productos.model");
 const db = require("../db/knex");
 
@@ -30,7 +31,8 @@ async function getById(req, res, next) {
 
 async function create(req, res, next) {
   try {
-    const { ID_Marca, ID_Categoria } = req.body;
+    const payload = matchedData(req, { locations: ["body"], includeOptionals: true });
+    const { ID_Marca, ID_Categoria } = payload;
 
     const marcaExiste = await existeEnTabla("Marcas", "ID_Marca", ID_Marca);
     const categoriaExiste = await existeEnTabla("Categorias", "ID_Categoria", ID_Categoria);
@@ -38,7 +40,7 @@ async function create(req, res, next) {
     if (!marcaExiste) return res.status(400).json({ ok: false, error: "ID_Marca no existe" });
     if (!categoriaExiste) return res.status(400).json({ ok: false, error: "ID_Categoria no existe" });
 
-    const nuevo = await Productos.crear(req.body);
+    const nuevo = await Productos.crear(payload);
     res.status(201).json({ ok: true, data: nuevo });
   } catch (err) {
     next(err);
@@ -48,17 +50,26 @@ async function create(req, res, next) {
 async function update(req, res, next) {
   try {
     const id = Number(req.params.id);
+    const payload = matchedData(req, { locations: ["body"], includeOptionals: true });
 
-    if (req.body.ID_Marca) {
-      const marcaExiste = await existeEnTabla("Marcas", "ID_Marca", req.body.ID_Marca);
+    if (Object.keys(payload).length === 0) {
+      return res.status(400).json({
+        ok: false,
+        error: "Debes enviar al menos un campo válido para actualizar",
+      });
+    }
+
+    if (payload.ID_Marca) {
+      const marcaExiste = await existeEnTabla("Marcas", "ID_Marca", payload.ID_Marca);
       if (!marcaExiste) return res.status(400).json({ ok: false, error: "ID_Marca no existe" });
     }
-    if (req.body.ID_Categoria) {
-      const categoriaExiste = await existeEnTabla("Categorias", "ID_Categoria", req.body.ID_Categoria);
+
+    if (payload.ID_Categoria) {
+      const categoriaExiste = await existeEnTabla("Categorias", "ID_Categoria", payload.ID_Categoria);
       if (!categoriaExiste) return res.status(400).json({ ok: false, error: "ID_Categoria no existe" });
     }
 
-    const actualizado = await Productos.actualizar(id, req.body);
+    const actualizado = await Productos.actualizar(id, payload);
 
     if (!actualizado) return res.status(404).json({ ok: false, error: "Producto no encontrado" });
 

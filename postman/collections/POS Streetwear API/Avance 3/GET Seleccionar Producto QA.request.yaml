@@ -1,0 +1,25 @@
+$kind: http-request
+name: GET Seleccionar Producto QA
+url: '{{baseUrl}}/productos'
+method: GET
+order: 4000
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 200", function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test("Guardar un producto con stock para pruebas de pedidos", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", true);
+        pm.expect(json.data).to.be.an("array");
+
+        const producto = json.data.find(item => Number(item.Stock_Disponible) > 0);
+        pm.expect(producto, "No se encontró producto con stock disponible").to.exist;
+
+        pm.collectionVariables.set("avance3ProductoId", String(producto.ID_Producto));
+        pm.collectionVariables.set("avance3ProductoStock", String(producto.Stock_Disponible));
+        pm.collectionVariables.set("avance3ProductoNombre", String(producto.Nombre_Modelo));
+      });
+    language: text/javascript

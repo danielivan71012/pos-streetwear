@@ -1,0 +1,21 @@
+$kind: http-request
+url: http://localhost:3000/api/v1/auth/login
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"email\": \"daniel.admin@mail.com\",\r
+
+    \  \"password\": \"Pspgo90\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "const json = pm.response.json();\r
+
+      if (json.token) pm.collectionVariables.set(\"token\", json.token);"
+    language: text/javascript
+order: 1773211762129

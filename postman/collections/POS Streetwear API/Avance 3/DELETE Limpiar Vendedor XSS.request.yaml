@@ -1,0 +1,19 @@
+$kind: http-request
+name: DELETE Limpiar Vendedor XSS
+url: '{{baseUrl}}/vendedores/{{avance3XssVendedorId}}'
+method: DELETE
+headers:
+  Authorization: Bearer {{adminToken}}
+order: 10000
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 200", function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test("Vendedor temporal eliminado", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", true);
+      });
+    language: text/javascript

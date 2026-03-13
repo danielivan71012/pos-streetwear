@@ -1,0 +1,38 @@
+$kind: http-request
+name: POST Pedido Rollback Stock Insuficiente
+url: '{{baseUrl}}/pedidos'
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{adminToken}}
+body:
+  type: json
+  content: |-
+    {
+      "Metodo_Pago": "Efectivo",
+      "items": [
+        {
+          "ID_Producto": {{avance3ProductoId}},
+          "Cantidad": {{avance3CantidadExcesiva}}
+        }
+      ]
+    }
+order: 7000
+scripts:
+  - type: beforeRequest
+    code: |-
+      const stock = Number(pm.collectionVariables.get("avance3ProductoStock") || "0");
+      pm.collectionVariables.set("avance3CantidadExcesiva", String(stock + 9999));
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test("Status 400", function () {
+        pm.response.to.have.status(400);
+      });
+
+      pm.test("Error menciona stock insuficiente", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", false);
+        pm.expect(JSON.stringify(json).toLowerCase()).to.include("stock");
+      });
+    language: text/javascript

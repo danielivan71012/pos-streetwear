@@ -1,0 +1,31 @@
+$kind: http-request
+name: POST Producto 403 con Vendedor
+url: '{{baseUrl}}/productos'
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{vendedorToken}}
+body:
+  type: json
+  content: |-
+    {
+      "ID_Marca": 1,
+      "ID_Categoria": 1,
+      "Nombre_Modelo": "Forbidden Test",
+      "Atributo_Talla_Medida": "M",
+      "Precio_Venta": 999.99,
+      "Stock_Disponible": 3
+    }
+order: 12000
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 403", function () {
+        pm.response.to.have.status(403);
+      });
+
+      pm.test("Body indica no autorizado", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", false);
+      });
+    language: text/javascript

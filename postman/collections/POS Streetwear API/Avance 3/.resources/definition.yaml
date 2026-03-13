@@ -1,0 +1,4 @@
+$kind: collection
+name: Avance 3
+description: 'Flujo de pruebas para Pedidos, AES, RBAC y XSS. El login admin viene preconfigurado; para RBAC con vendedor completa vendedorPassword.'
+order: 4000

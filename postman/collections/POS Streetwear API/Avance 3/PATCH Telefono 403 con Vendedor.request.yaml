@@ -1,0 +1,26 @@
+$kind: http-request
+name: PATCH Telefono 403 con Vendedor
+url: '{{baseUrl}}/vendedores/{{avance3VendedorId}}/telefono'
+method: PATCH
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{vendedorToken}}
+body:
+  type: json
+  content: |-
+    {
+      "Telefono": "6641234567"
+    }
+order: 13000
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 403", function () {
+        pm.response.to.have.status(403);
+      });
+
+      pm.test("Body indica no autorizado", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", false);
+      });
+    language: text/javascript

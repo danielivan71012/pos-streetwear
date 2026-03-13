@@ -1,0 +1,22 @@
+$kind: http-request
+name: GET Seleccionar Vendedor QA
+url: '{{baseUrl}}/vendedores'
+method: GET
+order: 3000
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 200", function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test("Guardar un vendedor para pruebas AES/RBAC", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", true);
+        pm.expect(json.data).to.be.an("array");
+
+        const vendedor = json.data.find(item => item.Rol === "Vendedor");
+        pm.expect(vendedor, "No se encontró un usuario con rol Vendedor").to.exist;
+        pm.collectionVariables.set("avance3VendedorId", String(vendedor.ID_Usuario));
+      });
+    language: text/javascript

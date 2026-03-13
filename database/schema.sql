@@ -22,6 +22,8 @@ CREATE TABLE dbo.Usuarios_Vendedores (
     Nombre_Completo   NVARCHAR(150)      NOT NULL,
     Rol               NVARCHAR(30)       NOT NULL,
     Email_Contacto    NVARCHAR(150)      NOT NULL UNIQUE,
+    PasswordHash      NVARCHAR(255)      NULL,
+    Telefono_Enc      NVARCHAR(512)      NULL,
     CONSTRAINT CK_Usuarios_Rol CHECK (Rol IN ('Administrador','Vendedor'))
 );
 GO

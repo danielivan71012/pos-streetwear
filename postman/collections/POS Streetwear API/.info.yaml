@@ -8,3 +8,31 @@ variables:
     value: ''
   - key: productoId
     value: ''
+  - key: adminEmail
+    value: 'daniel.admin@mail.com'
+  - key: adminPassword
+    value: 'Pspgo90'
+  - key: vendedorEmail
+    value: 'ivan710@gmail.com'
+  - key: vendedorPassword
+    value: 'replace_with_vendedor_password'
+  - key: adminToken
+    value: ''
+  - key: vendedorToken
+    value: ''
+  - key: avance3VendedorId
+    value: ''
+  - key: avance3ProductoId
+    value: ''
+  - key: avance3ProductoStock
+    value: ''
+  - key: avance3ProductoNombre
+    value: ''
+  - key: avance3Telefono
+    value: ''
+  - key: avance3VentaId
+    value: ''
+  - key: avance3XssEmail
+    value: ''
+  - key: avance3XssVendedorId
+    value: ''

@@ -1,0 +1,28 @@
+$kind: http-request
+name: POST Login Vendedor
+url: '{{baseUrl}}/auth/login'
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "{{vendedorEmail}}",
+      "password": "{{vendedorPassword}}"
+    }
+order: 2000
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 200", function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test("Vendedor token recibido", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", true);
+        pm.expect(json).to.have.property("token");
+        pm.collectionVariables.set("vendedorToken", json.token);
+      });
+    language: text/javascript

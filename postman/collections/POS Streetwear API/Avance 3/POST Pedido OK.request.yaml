@@ -1,0 +1,35 @@
+$kind: http-request
+name: POST Pedido OK
+url: '{{baseUrl}}/pedidos'
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{adminToken}}
+body:
+  type: json
+  content: |-
+    {
+      "Metodo_Pago": "Tarjeta",
+      "items": [
+        {
+          "ID_Producto": {{avance3ProductoId}},
+          "Cantidad": 1
+        }
+      ]
+    }
+order: 6000
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 201", function () {
+        pm.response.to.have.status(201);
+      });
+
+      pm.test("Pedido creado y venta guardada", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", true);
+        pm.expect(json.data).to.have.property("ID_Venta");
+        pm.expect(json.data).to.have.property("Total_Venta");
+        pm.collectionVariables.set("avance3VentaId", String(json.data.ID_Venta));
+      });
+    language: text/javascript

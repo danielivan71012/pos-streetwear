@@ -1,0 +1,33 @@
+$kind: http-request
+name: PATCH Telefono Admin OK
+url: '{{baseUrl}}/vendedores/{{avance3VendedorId}}/telefono'
+method: PATCH
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{adminToken}}
+body:
+  type: json
+  content: |-
+    {
+      "Telefono": "{{avance3Telefono}}"
+    }
+order: 5000
+scripts:
+  - type: beforeRequest
+    code: |-
+      const telefono = "664" + String(Date.now()).slice(-7);
+      pm.collectionVariables.set("avance3Telefono", telefono);
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test("Status 200", function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test("Telefono actualizado", function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property("ok", true);
+        pm.expect(json.data).to.have.property("ID_Usuario");
+        pm.expect(String(json.data.ID_Usuario)).to.eql(pm.collectionVariables.get("avance3VendedorId"));
+      });
+    language: text/javascript
